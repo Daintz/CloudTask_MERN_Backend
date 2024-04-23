@@ -3,16 +3,14 @@ import Project from "../models/Project";
 
 export class projectController {
   static createProject = async (req: Request, res: Response) => {
-
-    console.log(req.body)
-
     const project = new Project(req.body);
 
     try {
       await project.save();
-      res.send('Project created successfully')
+      res.send('Project created successfully');
     } catch (error) {
       console.log(error);
+      res.status(404).json({ error: error.message });
     };
   };
 
@@ -22,11 +20,13 @@ export class projectController {
       res.json(projects);
     } catch (error) {
       console.log(error);
+      res.status(404).json({ error: error.message });
     };
   };
 
   static getProjectById = async (req: Request, res: Response) => {
     const { id } = req.params;
+
     try {
       const project = await Project.findById(id);
 
@@ -38,6 +38,45 @@ export class projectController {
       res.json(project);
     } catch (error) {
       console.log(error);
+      res.status(404).json({ error: error.message });
+    };
+  };
+
+  static updateProject = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+      const project = await Project.findByIdAndUpdate(id, req.body);
+
+      if (!project) {
+        const error = new Error('Project not found');
+        return res.status(404).json({ error: error.message });
+      }
+
+      await project.save();
+      res.send('Project updated successfully');
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({ error: error.message });
+    };
+  };
+
+  static deleteProject = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+      const project = await Project.findById(id);
+
+      if (!project) {
+        const error = new Error('Project not found');
+        return res.status(404).json({ error: error.message });
+      }
+
+      await project.deleteOne();
+      res.send('Project deleted successfully');
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({ error: error.message });
     };
   };
 };

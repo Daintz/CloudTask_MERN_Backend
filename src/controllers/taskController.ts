@@ -15,4 +15,31 @@ export class TaskController {
       res.status(404).json({ error: error.message });
     };
   };
+
+  static getProjectTasks = async (req: Request, res: Response) => {
+    try {
+      const tasks = await Task.find({ project: req.project.id }).populate('project');
+      res.json(tasks);
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({ error: error.message });
+    }
+  };
+
+  static getTaskById = async (req: Request, res: Response) => {
+    const { projectId, taskId } = req.params;
+    console.log(projectId, taskId);
+
+    try {
+      const task = await Task.findById(taskId);
+      if (task.project.id.toString() === projectId) {
+        res.json(task);
+      } else {
+        res.status(404).json({ error: 'Task not found' });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({ error: error.message });
+    }
+  };
 };

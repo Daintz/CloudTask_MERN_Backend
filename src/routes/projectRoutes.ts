@@ -22,12 +22,14 @@ router.get('/', projectController.getAllProjects);
 
 router.get('/:id',
   param('id').isMongoId().withMessage('Invalid ID'),
+  validateProjectExists,
   handleInputErrors,
   projectController.getProjectById
 );
 
 router.put('/:id',
   param('id').isMongoId().withMessage('Invalid ID'),
+  validateProjectExists,
   validateInput,
   handleInputErrors,
   projectController.updateProject
@@ -35,6 +37,7 @@ router.put('/:id',
 
 router.delete('/:id',
   param('id').isMongoId().withMessage('Invalid ID'),
+  validateProjectExists,
   handleInputErrors,
   projectController.deleteProject
 );

@@ -25,17 +25,8 @@ export class projectController {
   };
 
   static getProjectById = async (req: Request, res: Response) => {
-    const { id } = req.params;
-
     try {
-      const project = await Project.findById(id);
-
-      if (!project) {
-        const error = new Error('Project not found');
-        return res.status(404).json({ error: error.message });
-      }
-
-      res.json(project);
+      res.json(req.project);
     } catch (error) {
       console.log(error);
       res.status(404).json({ error: error.message });
@@ -43,17 +34,8 @@ export class projectController {
   };
 
   static updateProject = async (req: Request, res: Response) => {
-    const { id } = req.params;
-
     try {
-      const project = await Project.findByIdAndUpdate(id, req.body);
-
-      if (!project) {
-        const error = new Error('Project not found');
-        return res.status(404).json({ error: error.message });
-      }
-
-      await project.save();
+      await req.project.updateOne(req.body);
       res.send('Project updated successfully');
     } catch (error) {
       console.log(error);
@@ -62,17 +44,8 @@ export class projectController {
   };
 
   static deleteProject = async (req: Request, res: Response) => {
-    const { id } = req.params;
-
     try {
-      const project = await Project.findById(id);
-
-      if (!project) {
-        const error = new Error('Project not found');
-        return res.status(404).json({ error: error.message });
-      }
-
-      await project.deleteOne();
+      await req.project.deleteOne();
       res.send('Project deleted successfully');
     } catch (error) {
       console.log(error);
